@@ -23,6 +23,7 @@ Apply migrations (using Entity Framework Core):
 
   dotnet ef migrations add InitialCreate
   dotnet ef database update
+  
 4️⃣ Step 4
 🚀 Run the project:
          dotnet run
