@@ -1,7 +1,70 @@
 ﻿@page "/"
+@inject NavigationManager NavigationManager
 
 <PageTitle>Home</PageTitle>
 
-<h1>Hello, world!</h1>
 
-Welcome to your new app.
+<div class="home-background">
+
+<div class="text-center mt-5">
+    <h1 class="display-4">Κλείσε το ραντεβού σου εύκολα & γρήγορα!</h1>
+        <p class="lead mt-3 custom-lead">Η υγεία σου είναι προτεραιότητα – η πλατφόρμα MediBooking σε βοηθά να βρεις τον κατάλληλο γιατρό με λίγα μόνο κλικ.</p>
+    <button class="btn btn-primary btn-lg mt-4" @onclick="GoToCreateAppointment">Κλείσε Ραντεβού</button>
+</div>
+
+<hr class="my-5" />
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="card-title text-danger">🩺 Ιατρικά Νέα</h4>
+                <p class="card-text">
+                    📢 Νέα μελέτη δείχνει ότι οι τακτικοί έλεγχοι μειώνουν τον κίνδυνο καρδιοπάθειας κατά 40%!<br />
+                    Μην αμελείς την πρόληψη — ενημερώσου και κλείσε ραντεβού για check-up.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+    <br />
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="card-title text-danger">📢 Νέα θεραπευτικά δεδομένα!</h4>
+                <p class="card-text">
+                    🧬 Μελέτη για τη θρομβεκτομή δημοσιεύθηκε στο NEJM<br />
+                </p>
+                <ul class="card-text">
+                    <li>Καλύτερη ανάρρωση κατά την έξοδο από το νοσοκομείο</li>
+                    <li>Υψηλότερο ποσοστό για καλή αποκατάσταση 81%</li>
+                    <li>Μεγαλύτερη πιθανότητα για πλήρη αποκατάσταση 51%</li>
+                    <li>Ραντεβού δια ζώσης ή εξ αποστάσεως</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <h4 class="card-title text-success">✅ Γιατί να επιλέξεις το MediBooking;</h4>
+                <ul class="card-text">
+                    <li>Εύκολη και γρήγορη διαδικασία κράτησης</li>
+                    <li>Προσωπικό προφίλ & ιατρικό ιστορικό</li>
+                    <li>Άμεση επικοινωνία με γιατρούς</li>
+                    <li>Ραντεβού δια ζώσης ή εξ αποστάσεως</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+</div>
+@code {
+    private void GoToCreateAppointment()
+    {
+        NavigationManager.NavigateTo("/appointments/create");
+    }
+}

@@ -8,14 +8,16 @@
     <link rel="stylesheet" href="@Assets["lib/bootstrap/dist/css/bootstrap.min.css"]" />
     <link rel="stylesheet" href="@Assets["app.css"]" />
     <link rel="stylesheet" href="@Assets["MediBooking.styles.css"]" />
+    <link href="/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+
     <ImportMap />
     <link rel="icon" type="image/png" href="favicon.png" />
     <HeadOutlet />
 </head>
 
 <body>
-    <Routes />
+    <Routes @rendermode="InteractiveServer"/>
     <script src="_framework/blazor.web.js"></script>
+    <script src="/lib/bootstrap/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

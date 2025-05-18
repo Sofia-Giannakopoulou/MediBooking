@@ -1,0 +1,110 @@
+﻿@page "/appointments/edit/{id:int}"
+@using MediBooking.Services.UserServices
+@using MediBooking.UserServices
+@inject IAppointmentService AppointmentService
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>Edit Appointment</h3>
+
+@if (appointment == null || doctors == null || patients == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="appointment" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label class="form-label">Patient</label>
+            <InputSelect class="form-control" @bind-Value="appointment.PatientId">
+                <option value="">Select Patient</option>
+                @foreach (var p in patients)
+                {
+                    <option value="@p.Id">@p.FirstName @p.LastName</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Doctor</label>
+            <InputSelect class="form-control" @bind-Value="appointment.DoctorId">
+                <option value="">Select Doctor</option>
+                @foreach (var d in doctors)
+                {
+                    <option value="@d.Id">@d.FirstName @d.LastName</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Scheduled Date</label>
+            <InputDate class="form-control" @bind-Value="appointment.ScheduledDate" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Reason for Visit</label>
+            <InputTextArea class="form-control" @bind-Value="appointment.ReasonForVisit" />
+        </div>
+
+        <div class="form-check mb-3">
+            <InputCheckbox class="form-check-input" @bind-Value="appointment.IsRemoteAppointment" />
+            <label class="form-check-label">Remote Appointment</label>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Appointment Status</label>
+            <InputSelect class="form-control" @bind-Value="appointment.AppointmentStatus">
+                @foreach (var status in Enum.GetValues(typeof(MediBooking.Enums.AppointmentStatus)).Cast<MediBooking.Enums.AppointmentStatus>())
+                {
+                    <option value="@status">@status</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Doctor Notes</label>
+            <InputTextArea class="form-control" @bind-Value="appointment.DoctorNotes" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+    </EditForm>
+}
+
+@code {
+    [Parameter] public int id { get; set; }
+
+    private MediBooking.Models.Appointment appointment;
+    private List<MediBooking.Models.User> doctors;
+    private List<MediBooking.Models.User> patients;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var users = await UserService.GetUsersAsync();
+        doctors = users.Where(u => u.UserRole == MediBooking.Enums.UserRole.Doctor).ToList();
+        patients = users.Where(u => u.UserRole == MediBooking.Enums.UserRole.Patient).ToList();
+
+        appointment = await AppointmentService.GetAppointmentByIdAsync(id);
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        var success = await AppointmentService.UpdateAppointment(appointment);
+        if (success)
+        {
+            NavigationManager.NavigateTo("/appointments");
+        }
+        else
+        {
+            Console.WriteLine("Failed to update appointment.");
+        }
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/appointments");
+    }
+}

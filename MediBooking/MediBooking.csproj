@@ -18,9 +18,12 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="9.0.5" />
-    <PackageReference Include="Quartz" Version="3.14.0" />
-    <PackageReference Include="Quartz.Extensions.DependencyInjection" Version="3.14.0" />
-    <PackageReference Include="Quartz.Extensions.Hosting" Version="3.14.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Update="wwwroot\images\backgroundhome.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
 
 </Project>

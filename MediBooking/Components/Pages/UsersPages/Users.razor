@@ -1,0 +1,90 @@
+﻿@page "/users"
+@using MediBooking.DataAccessLayer
+@using MediBooking.Models
+@using MediBooking.Services.UserServices
+@using MediBooking.UserServices
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+
+<h3>User List</h3>
+
+@if (users == null)
+{
+    <p><em>Loading...</em></p>
+}
+else if (users.Count == 0)
+{
+    <p>No users found.</p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>User ID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>AMKA</th>
+                <th>Medical Record</th>
+                <th>Notes</th>
+                <th>Location</th>
+                <th>Profile Picture</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in users)
+            {
+                <tr style="cursor: pointer;" @onclick="@(() => NavigateToUserDetails(user.Id))">
+                    <td>@user.Id</td>
+                    <td>@user.FirstName</td>
+                    <td>@user.LastName</td>
+                    <td>@user.Amka</td>
+                    <td>@user.PatientHistory</td>
+                    <td>@user.Notes</td>
+                    <td>@user.Location</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(user.ProfilePicture))
+                        {
+                            <img src="@user.ProfilePicture" alt="Profile" width="50" height="50" />
+                        }
+                    </td>
+                    <td>
+                        <a class="btn btn-primary btn-sm"
+                           href="/users/edit/@user.Id"
+                        @onclick:stopPropagation>
+                            Edit
+                        </a>
+                        <button class="btn btn-danger btn-sm"
+                                @onclick="() => DeleteUser(user.Id)"
+                        @onclick:stopPropagation>
+                            Delete
+                        </button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+@code {
+    private List<User> users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await UserService.GetUsersAsync();
+    }
+
+    private async Task DeleteUser(int userId)
+    {
+        var user = users.FirstOrDefault(u => u.Id == userId);
+        if (user != null)
+        {
+            await UserService.DeleteUser(user);
+            users = await UserService.GetUsersAsync();
+        }
+    }
+    private void NavigateToUserDetails(int userId)
+    {
+        NavigationManager.NavigateTo($"/users/{userId}");
+    }
+}

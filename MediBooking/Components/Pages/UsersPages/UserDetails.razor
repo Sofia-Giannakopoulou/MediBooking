@@ -1,0 +1,57 @@
+﻿@page "/users/{id:int}"
+@using MediBooking.Models
+@using MediBooking.Services.UserServices
+@using MediBooking.UserServices
+@inject IUserService UserService
+
+<h3>User Details</h3>
+
+@if (user == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div>
+        <p><strong>ID:</strong> @user.Id</p>
+        <p><strong>First Name:</strong> @user.FirstName</p>
+        <p><strong>Last Name:</strong> @user.LastName</p>
+        <p><strong>AMKA:</strong> @user.Amka</p>
+        <p><strong>Medical History:</strong> @user.PatientHistory</p>
+        <p><strong>Notes:</strong> @user.Notes</p>
+        <p><strong>Location:</strong> @user.Location</p>
+        @if (!string.IsNullOrEmpty(user.ProfilePicture))
+        {
+            <p><strong>Profile Picture:</strong></p>
+            <img src="@user.ProfilePicture" alt="Profile Picture" width="150" />
+        }
+        else
+        {
+            <p><strong>Profile Picture:</strong> No picture uploaded.</p>
+        }
+    </div>
+}
+    <button class="btn btn-secondary" @onclick="GoBack">Go Back</button>
+
+
+@code {
+    [Parameter]
+    public int id { get; set; }
+
+    private User user;
+
+    protected override async Task OnInitializedAsync()
+    {
+        user = await UserService.GetUserById(id);
+    }
+
+    [Inject]
+    public NavigationManager NavigationManager { get; set; }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/users");
+    }
+
+}
+

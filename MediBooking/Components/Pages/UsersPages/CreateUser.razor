@@ -1,0 +1,59 @@
+﻿@page "/createuser"
+@using MediBooking.DataAccessLayer
+@using MediBooking.Models
+@using MediBooking.Services.UserServices
+@using MediBooking.UserServices
+@using Microsoft.AspNetCore.Components.Forms
+@inject IUserService UserService
+@inject IWebHostEnvironment Environment
+
+<h4>Add New User</h4>
+
+@if (!string.IsNullOrEmpty(statusMessage))
+{
+    <div class="alert alert-info">@statusMessage</div>
+}
+
+<EditForm Model="@newUser" OnValidSubmit="@HandleValidSubmit">
+    <InputText @bind-Value="newUser.FirstName" placeholder="First Name" class="form-control" />
+    <InputText @bind-Value="newUser.LastName" placeholder="Last Name" class="form-control" />
+    <InputText @bind-Value="newUser.Location" placeholder="Location" class="form-control" />
+    <button class="btn btn-success">Add</button>
+</EditForm>
+<InputFile OnChange="HandleImageUpload" />
+
+@if (!string.IsNullOrEmpty(newUser.ProfilePicture))
+{
+    <img src="@newUser.ProfilePicture" alt="Profile Picture" width="150" />
+}
+@code {
+    private User newUser = new();
+    private List<User> users;
+    private string statusMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        var success = await UserService.CreateUser(newUser);
+        statusMessage = success ? "User added successfully." : "Error adding user.";
+        users = await UserService.GetUsersAsync();
+        newUser = new();
+    }
+    private async Task HandleImageUpload(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file != null)
+        {
+            var uploadsFolder = Path.Combine(Environment.WebRootPath, "uploads");
+            Directory.CreateDirectory(uploadsFolder); 
+
+            var fileName = $"{Guid.NewGuid()}_{file.Name}";
+            var filePath = Path.Combine(uploadsFolder, fileName);
+
+            await using var fs = new FileStream(filePath, FileMode.Create);
+            await file.OpenReadStream().CopyToAsync(fs);
+
+            // Store relative path
+            newUser.ProfilePicture = $"/uploads/{fileName}";
+        }
+    }
+}

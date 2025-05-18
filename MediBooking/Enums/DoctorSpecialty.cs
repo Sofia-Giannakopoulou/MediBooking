@@ -1,0 +1,32 @@
+﻿namespace MediBooking.Enums
+{
+    public enum DoctorSpecialty
+    {
+        GeneralSurgery,
+        CardiothoracicSurgery,
+        Neurosurgery,
+        OrthopedicSurgery,
+        PlasticSurgery,
+        Urology,
+        Otolaryngology, 
+        OphthalmicSurgery,
+        Cardiology,
+        Endocrinology,
+        Gastroenterology,
+        Hematology,
+        InfectiousDisease,
+        Nephrology,
+        Oncology,
+        Pulmonology,
+        Rheumatology,
+        Psychiatry,
+        Neurology,
+        Neuropsychiatry,
+        Pathology,
+        Dermatology,
+        AllergyAndImmunology,
+        GynecologicOncology,
+        ReproductiveEndocrinology,
+        AerospaceMedicine,
+    }
+}

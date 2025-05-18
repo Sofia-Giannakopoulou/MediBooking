@@ -1,0 +1,87 @@
+﻿@page "/appointments/create"
+@using MediBooking.Models
+@using MediBooking.Enums
+@using MediBooking.Services.UserServices
+@using MediBooking.UserServices
+@inject IUserService UserService
+@inject IAppointmentService AppointmentService
+@inject NavigationManager NavigationManager
+
+<h3>Create Appointment</h3>
+
+@if (doctors == null || patients == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <EditForm Model="appointment" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label class="form-label">Patient</label>
+            <InputSelect class="form-control" @bind-Value="appointment.PatientId">
+                <option value="">Select Patient</option>
+                @foreach (var p in patients)
+                {
+                    <option value="@p.Id">@p.FirstName @p.LastName</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Doctor</label>
+            <InputSelect class="form-control" @bind-Value="appointment.DoctorId">
+                <option value="">Select Doctor</option>
+                @foreach (var d in doctors)
+                {
+                    <option value="@d.Id">@d.FirstName @d.LastName</option>
+                }
+            </InputSelect>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Scheduled Date</label>
+            <InputDate class="form-control" @bind-Value="appointment.ScheduledDate" />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Reason for Visit</label>
+            <InputTextArea class="form-control" @bind-Value="appointment.ReasonForVisit" />
+        </div>
+
+        <div class="form-check mb-3">
+            <InputCheckbox class="form-check-input" @bind-Value="appointment.IsRemoteAppointment" />
+            <label class="form-check-label">Remote Appointment</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Create</button>
+        <button type="button" class="btn btn-secondary" @onclick="GoBack">Cancel</button>
+    </EditForm>
+}
+
+@code {
+    private Appointment appointment = new Appointment { ScheduledDate = DateTime.Today };
+    private List<User> doctors;
+    private List<User> patients;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var users = await UserService.GetUsersAsync();
+        doctors = users.Where(u => u.UserRole == UserRole.Doctor).ToList();
+        patients = users.Where(u => u.UserRole == UserRole.Patient).ToList();
+    }
+
+    private async Task HandleValidSubmit()
+    {
+        appointment.AppointmentStatus = AppointmentStatus.Scheduled;
+        await AppointmentService.CreateAppointment(appointment);
+        NavigationManager.NavigateTo("/appointments");
+    }
+
+    private void GoBack()
+    {
+        NavigationManager.NavigateTo("/appointments");
+    }
+}
