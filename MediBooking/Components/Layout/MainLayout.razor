@@ -1,4 +1,49 @@
 ﻿@inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@inject Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage.ProtectedLocalStorage LocalStorage
+
+@code {
+    private string? lastname;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var result = await LocalStorage.GetAsync<User>("currentUser");
+            if (result.Success && result.Value is User user)
+            {
+                lastname = user.LastName;
+            }
+            else
+            {
+                lastname = null;
+            }
+
+            StateHasChanged(); 
+        }
+    }
+
+    private void SignOut()
+    {
+        NavigationManager.NavigateTo("/signout", forceLoad: true);
+    }
+
+    private void SignIn()
+    {
+        NavigationManager.NavigateTo("/signin");
+    }
+
+    private void SignUp()
+    {
+        NavigationManager.NavigateTo("/signup");
+    }
+
+    public class User
+    {
+        public string LastName { get; set; }
+        
+    }
+}
 
 <div class="page">
     <div class="sidebar">
@@ -6,18 +51,25 @@
     </div>
 
     <main>
-        <div class="top-row px-4">
+        <div class="top-row px-4 d-flex justify-content-between">
             <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+
+            <div>
+                @if (!string.IsNullOrEmpty(lastname))
+                {
+                    <span class="me-2">Καλωσήρθες, @lastname</span>
+                    <button class="btn btn-outline-secondary btn-sm" @onclick="SignOut">Αποσύνδεση</button>
+                }
+                else
+                {
+                    <button class="btn btn-outline-primary btn-sm me-2" @onclick="SignIn">Είσοδος</button>
+                    <button class="btn btn-outline-success btn-sm" @onclick="SignUp">Εγγραφή</button>
+                }
+            </div>
         </div>
 
         <article class="content px-4">
             @Body
         </article>
     </main>
-</div>
-
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
 </div>

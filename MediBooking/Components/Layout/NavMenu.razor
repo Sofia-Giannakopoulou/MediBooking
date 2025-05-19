@@ -1,40 +1,119 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using MediBooking.Enums
+@using MediBooking.Models
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage LocalStorage
+@inject NavigationManager NavigationManager
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">MediBooking</a>
     </div>
 </div>
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+    <span class="navbar-toggler-icon"></span>
+</button>
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
+<div class="collapse navbar-collapse" id="navbarNav">
     <nav class="nav flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+        <div class="nav-scrollable" @onclick="ToggleNavbar">
+            <nav class="nav flex-column">
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                        <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
+                    </NavLink>
+                </div>
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="users">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Users
-            </NavLink>
-        </div>
+                @if (currentUser != null)
+                {
+                    @* Admin-only *@
+                    if (currentUser.UserRole == UserRole.Admin)
+                    {
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="users">
+                                <span class="bi bi-people-fill" aria-hidden="true"></span> Manage Users
+                            </NavLink>
+                        </div>
+                    }
 
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="appointments">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Appointments
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="signin">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Sign In
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="signup">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Sign Up
-            </NavLink>
+                    @* Doctor-only *@
+                    if (currentUser.UserRole == UserRole.Doctor)
+                    {
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="myappointments">
+                                <span class="bi bi-calendar-check-fill" aria-hidden="true"></span> My Appointments
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="patients">
+                                <span class="bi bi-person-lines-fill" aria-hidden="true"></span> Patients
+                            </NavLink>
+                        </div>
+                    }
+
+                    @* Patient-only *@
+                    if (currentUser.UserRole == UserRole.Patient)
+                    {
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="bookappointment">
+                                <span class="bi bi-calendar-plus" aria-hidden="true"></span> Book Appointment
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-3">
+                            <NavLink class="nav-link" href="myappointments">
+                                <span class="bi bi-clock-history" aria-hidden="true"></span> My Appointments
+                            </NavLink>
+                        </div>
+                    }
+
+                    @* Common for all logged-in users *@
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="signout">
+                            <span class="bi bi-box-arrow-right" aria-hidden="true"></span> Sign Out
+                        </NavLink>
+                    </div>
+                }
+                else
+                {
+                    @* Guest (not logged in) *@
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="signin">
+                            <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Sign In
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="signup">
+                            <span class="bi bi-pencil-square" aria-hidden="true"></span> Sign Up
+                        </NavLink>
+                    </div>
+                }
+            </nav>
         </div>
     </nav>
 </div>
 
+@code {
+    private User currentUser;
+    private bool isInitialized = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var result = await LocalStorage.GetAsync<User>("currentUser");
+            if (result.Success)
+            {
+                currentUser = result.Value;
+                StateHasChanged();
+            }
+            isInitialized = true;
+        }
+    }
+
+    private void ToggleNavbar()
+    {
+        // This method triggers when nav-scrollable is clicked, collapsing the navbar
+        // JavaScript to toggle Bootstrap collapse manually if needed can be added here
+        // But Bootstrap collapse will handle it automatically if used correctly with data-bs-toggle and data-bs-target
+    }
+}

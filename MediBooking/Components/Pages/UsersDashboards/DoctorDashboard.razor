@@ -1,0 +1,15 @@
+﻿@page "/userdashboard"
+@using MediBooking.Enums
+@using MediBooking.Models
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage LocalStorage
+@inject NavigationManager NavigationManager
+@inherits RoleProtectedPageBase
+
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await AuthorizeAsync(UserRole.Doctor);
+    }
+}

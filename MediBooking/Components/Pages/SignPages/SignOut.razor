@@ -1,0 +1,21 @@
+﻿@page "/signout"
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage LocalStorage
+@inject NavigationManager NavigationManager
+
+<p>Signing out...</p>
+
+@code {
+    private bool hasSignedOut = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !hasSignedOut)
+        {
+            hasSignedOut = true; 
+
+            await LocalStorage.DeleteAsync("currentUser");
+            NavigationManager.NavigateTo("/signin", forceLoad: true);
+        }
+    }
+}

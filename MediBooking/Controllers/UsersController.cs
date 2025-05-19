@@ -23,7 +23,6 @@ namespace MediBooking.Controllers
             return await _userService.GetUsersAsync();
         }
 
-
         [HttpPost]
         public async Task<bool> CreateUser([FromBody] User newUser)
         {

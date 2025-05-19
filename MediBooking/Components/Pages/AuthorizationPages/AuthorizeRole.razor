@@ -1,0 +1,33 @@
+﻿@using MediBooking.Models
+@using MediBooking.Enums
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
+@inject ProtectedLocalStorage LocalStorage
+@inject NavigationManager NavigationManager
+
+@code {
+    [Parameter] public RenderFragment ChildContent { get; set; }
+    [Parameter] public UserRole AllowedRole { get; set; }
+
+    private User currentUser;
+    private bool authorized = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var result = await LocalStorage.GetAsync<User>("currentUser");
+        if (result.Success)
+        {
+            currentUser = result.Value;
+            authorized = currentUser.UserRole == AllowedRole;
+        }
+
+        if (!authorized)
+        {
+            NavigationManager.NavigateTo("/unauthorized");
+        }
+    }
+}
+
+@if (authorized)
+{
+    @ChildContent
+}

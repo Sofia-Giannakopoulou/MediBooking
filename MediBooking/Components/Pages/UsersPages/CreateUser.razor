@@ -15,9 +15,17 @@
 }
 
 <EditForm Model="@newUser" OnValidSubmit="@HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
     <InputText @bind-Value="newUser.FirstName" placeholder="First Name" class="form-control" />
     <InputText @bind-Value="newUser.LastName" placeholder="Last Name" class="form-control" />
     <InputText @bind-Value="newUser.Location" placeholder="Location" class="form-control" />
+    <InputNumber @bind-Value="newUser.Age" placeholder="Age" class="form-control" />
+    <InputText @bind-Value="newUser.Amka" placeholder="Amka" class="form-control" />
+    <InputNumber @bind-Value="newUser.Sex" placeholder="Sex" class="form-control" />
+    <InputText @bind-Value="newUser.ProfilePicture" placeholder="Profile Picture URL" class="form-control" />
+
     <button class="btn btn-success">Add</button>
 </EditForm>
 <InputFile OnChange="HandleImageUpload" />
@@ -36,8 +44,10 @@
         var success = await UserService.CreateUser(newUser);
         statusMessage = success ? "User added successfully." : "Error adding user.";
         users = await UserService.GetUsersAsync();
-        newUser = new();
+        newUser = new(); 
+
     }
+
     private async Task HandleImageUpload(InputFileChangeEventArgs e)
     {
         var file = e.File;

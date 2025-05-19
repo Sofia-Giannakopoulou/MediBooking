@@ -1,24 +1,20 @@
-﻿.display-4 {
-    color: white;
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 4px 4px 10px rgba(0, 0, 0, 0.7);
-    font-weight: 700;
+﻿.hero-section {
+    background: linear-gradient(90deg, #f8fbff, #e6f0fa);
+    border-radius: 16px;
+    margin-top: 2rem;
 }
 
-.custom-lead {
-    color: cyan;
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 4px 4px 10px rgba(0, 0, 0, 0.7);
-    font-size: 1.6rem;
+.appointment-bar input {
+    min-width: 160px;
 }
 
-.btn-primary {
-    background-color: darkcyan;
-    border-radius: 30px;
-    border-color: #28a745;
-    color: white;
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.9), 4px 4px 10px rgba(0, 0, 0, 0.7);
+.hero-text h1 {
+    color: #1a1a1a;
 }
 
-    .btn-primary:hover {
-        background-color: green;
-        border-color: #1e7e34;
-    }
+.services-section > div {
+    max-width: 250px;
+}
+.hero-background {
+    background: linear-gradient(90deg, #f0f4ff 0%, #e9f1ff 100%);
+}

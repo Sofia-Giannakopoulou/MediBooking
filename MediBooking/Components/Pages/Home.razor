@@ -1,70 +1,156 @@
 ﻿@page "/"
+@using MediBooking.Enums
+@using MediBooking.Models
+@using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
 @inject NavigationManager NavigationManager
+@inject ProtectedLocalStorage LocalStorage
 
 <PageTitle>Home</PageTitle>
 
+<div class="container py-5">
+    <div class="row align-items-center">
+        <!-- Left: Hero Text & Search -->
+        <div class="col-md-6">
+            <h1 class="display-5 fw-bold mb-3">Connect with your doctor<br />and schedule a check-up</h1>
+            <p class="text-muted mb-4">
+                Stay on top of your health by connecting with your doctor and easily scheduling a check-up.
+            </p>
 
-<div class="home-background">
+            <div class="card p-3 shadow-sm mb-3">
+                <div class="row g-2">
+                    <div class="col-12">
+                        <label class="form-label">Doctor</label>
+                        <input class="form-control" placeholder="Dr. Rwmanos Kefalidis" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Date</label>
+                        <input type="date" class="form-control" value="2024-11-22" />
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">Location</label>
+                        <input class="form-control" placeholder="plac Zamkowy 4, 00-277 Warszawa, Poland" />
+                    </div>
+                    <div class="col-12 text-end mt-2">
+                        <button class="btn btn-primary" @onclick="HandleCreateAppointment">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </div>
+            </div>
 
-<div class="text-center mt-5">
-    <h1 class="display-4">Κλείσε το ραντεβού σου εύκολα & γρήγορα!</h1>
-        <p class="lead mt-3 custom-lead">Η υγεία σου είναι προτεραιότητα – η πλατφόρμα MediBooking σε βοηθά να βρεις τον κατάλληλο γιατρό με λίγα μόνο κλικ.</p>
-    <button class="btn btn-primary btn-lg mt-4" @onclick="GoToCreateAppointment">Κλείσε Ραντεβού</button>
-</div>
+            @if (!string.IsNullOrEmpty(infoMessage))
+            {
+                <div class="alert alert-warning mt-3">@infoMessage</div>
+            }
+        </div>
 
-<hr class="my-5" />
+        <!-- Right: Doctor Image -->
+        <div class="col-md-6 text-center">
+            <img src="images/doc1.jpg" class="img-fluid rounded" style="max-height: 450px;" alt="Doctor" />
+        </div>
+    </div>
 
-<div class="row">
-    <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h4 class="card-title text-danger">🩺 Ιατρικά Νέα</h4>
-                <p class="card-text">
-                    📢 Νέα μελέτη δείχνει ότι οι τακτικοί έλεγχοι μειώνουν τον κίνδυνο καρδιοπάθειας κατά 40%!<br />
-                    Μην αμελείς την πρόληψη — ενημερώσου και κλείσε ραντεβού για check-up.
-                </p>
+    <!-- Feature Highlights -->
+    <div class="row text-white text-center mt-5 gx-3">
+        <div class="col-md-4">
+            <div class="bg-primary p-4 rounded-3 shadow-sm">
+                <h5><i class="bi bi-person-search me-2"></i>Search Doctor</h5>
+                <p class="small">Find the best doctor for your check-up</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-info p-4 rounded-3 shadow-sm">
+                <h5><i class="bi bi-calendar-check me-2"></i>Appointment</h5>
+                <p class="small">Schedule a visit to a healthcare professional</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="bg-success p-4 rounded-3 shadow-sm">
+                <h5><i class="bi bi-activity me-2"></i>Get Solution</h5>
+                <p class="small">Get professional medical solutions from our expert doctors</p>
+            </div>
+        </div>
+    </div>
+
+    <hr class="my-5" />
+
+    <!-- Medical News Cards -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-danger">🩺 Medical News</h4>
+                    <p class="card-text">
+                        📢 A new study shows regular check-ups reduce heart disease risk by 40%!<br />
+                        Don't neglect prevention — stay informed and book your check-up today.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-danger">📢 New Treatment Data!</h4>
+                    <p class="card-text">
+                        🧬 A thrombectomy study was recently published in NEJM:<br />
+                    </p>
+                    <ul class="card-text">
+                        <li>Better recovery at hospital discharge</li>
+                        <li>Higher chance of good outcome: 81%</li>
+                        <li>Increased probability of full recovery: 51%</li>
+                        <li>Appointments available in-person or online</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h4 class="card-title text-success">✅ Why Choose MediBooking?</h4>
+                    <ul class="card-text">
+                        <li>Fast and easy booking process</li>
+                        <li>Personal profile & medical history</li>
+                        <li>Direct communication with doctors</li>
+                        <li>In-person and remote appointments</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
 </div>
-    <br />
-<div class="row">
-    <div class="col-md-6">
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h4 class="card-title text-danger">📢 Νέα θεραπευτικά δεδομένα!</h4>
-                <p class="card-text">
-                    🧬 Μελέτη για τη θρομβεκτομή δημοσιεύθηκε στο NEJM<br />
-                </p>
-                <ul class="card-text">
-                    <li>Καλύτερη ανάρρωση κατά την έξοδο από το νοσοκομείο</li>
-                    <li>Υψηλότερο ποσοστό για καλή αποκατάσταση 81%</li>
-                    <li>Μεγαλύτερη πιθανότητα για πλήρη αποκατάσταση 51%</li>
-                    <li>Ραντεβού δια ζώσης ή εξ αποστάσεως</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</div>
 
-<div class="col-md-6">
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <h4 class="card-title text-success">✅ Γιατί να επιλέξεις το MediBooking;</h4>
-                <ul class="card-text">
-                    <li>Εύκολη και γρήγορη διαδικασία κράτησης</li>
-                    <li>Προσωπικό προφίλ & ιατρικό ιστορικό</li>
-                    <li>Άμεση επικοινωνία με γιατρούς</li>
-                    <li>Ραντεβού δια ζώσης ή εξ αποστάσεως</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-
-</div>
 @code {
-    private void GoToCreateAppointment()
+    private bool isAuthorized = false;
+    private bool initialized = false;
+    private string infoMessage;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        NavigationManager.NavigateTo("/appointments/create");
+        if (firstRender && !initialized)
+        {
+            initialized = true;
+            var result = await LocalStorage.GetAsync<User>("currentUser");
+
+            if (result.Success && result.Value is User user)
+            {
+                isAuthorized = user.UserRole == UserRole.Patient || user.UserRole == UserRole.Admin;
+                StateHasChanged();
+            }
+        }
+    }
+
+    private void HandleCreateAppointment()
+    {
+        if (isAuthorized)
+        {
+            NavigationManager.NavigateTo("/appointments/create");
+        }
+        else
+        {
+            infoMessage = "You must be signed in to book an appointment.";
+            NavigationManager.NavigateTo("/signin");
+        }
     }
 }
